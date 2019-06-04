@@ -164,11 +164,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Location
             // Gets stuck in while loop
-            // Location loc = getLocation();
-            // updateInfo(GEO, loc.getLatitude() + "," + loc.getLongitude());
+            Location loc = getLocation();
+            updateInfo(GEO, loc.getLatitude() + "," + loc.getLongitude());
 
-
-            /* Error because of emulator
             // Wi-fi router SSIDs and MACs
             Set<String> routerNames = new TreeSet<>();
             Set<String> routerMacs = new TreeSet<>();
@@ -213,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
             updateInfo(ROUTER_NAMES, ssids);
             updateInfo(ROUTER_MACS, macs);
-            */
         }
 
         return infoMap;
@@ -319,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
         final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
 
-        Location last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location last = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(last == null) {
             final LocationListener ll = new LocationListener() {
                 @Override
@@ -346,11 +343,11 @@ public class MainActivity extends AppCompatActivity {
             };
 
             Looper ml = Looper.myLooper();
-            lm.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, ll, ml);
+            lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, ll, ml);
 
-            while(Double.isNaN(loc.getLatitude()) || Double.isNaN(loc.getLongitude())) {
+            // while(Double.isNaN(loc.getLatitude()) || Double.isNaN(loc.getLongitude())) {
 
-            }
+            // }
 
             lm.removeUpdates(ll);
         } else {
