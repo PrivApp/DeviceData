@@ -1,5 +1,5 @@
-[new]
-UserReadableName = xiaomi
+[redmi_5]
+UserReadableName = Redmi 5
 Build.FINGERPRINT = xiaomi/whyred/whyred:8.1.0/OPM1.171019.011/V9.6.3.0.OEIMIFD:user/release-keys
 Build.HARDWARE = qcom
 Build.RADIO = unknown
@@ -27,9 +27,9 @@ SharedLibraries = reqGlEsVersion=0x30002,android.hardware.audio.output,android.h
 Locales = af,af_ZA,am,am_ET,ar,ar_EG,ar_XB,ast,az,bg,bg_BG,bn,ca,ca_ES,cs,cs_CZ,da,da_DK,de,de_DE,el,el_GR,en,en_AU,en_CA,en_GB,en_IN,en_US,en_XA,es,es_ES,es_US,et,eu,fa,fa_IR,fi,fi_FI,fil,fil_PH,fr,fr_BE,fr_CA,fr_FR,gl,gu,hi,hi_IN,hr,hr_HR,hu,hu_HU,hy,in,in_ID,is,it,it_IT,iw,iw_IL,ja,ja_JP,ka,kk,km,kn,ko,ko_KR,ky,lo,lt,lt_LT,lv,lv_LV,mk,ml,mn,mr,ms,ms_MY,my,nb,nb_NO,ne,nl,nl_NL,pl,pl_PL,pt,pt_BR,pt_PT,ro,ro_RO,ru,ru_RU,si,sk,sk_SK,sl,sl_SI,sq,sr,sr_RS,sv,sv_SE,sw,sw_TZ,ta,te,th,th_TH,tr,tr_TR,uk,uk_UA,ur,uz,vi,vi_VN,zh,zh_CN,zh_HK,zh_TW,zu,zu_ZA
 Client = android-google
 Roaming = mobile-notroaming
-GSF.version = 19629021
-Vending.version =  81761900
-Vending.versionString = 17.6.19-all [0] [PR] 280955839
+GSF.version = 19831021
+Vending.version =  81791700
+Vending.versionString = 17.9.17-all [0] [PR] 284629082
 CellOperator = 21401
 SimOperator = 21401
 TimeZone = Europe/Madrid
