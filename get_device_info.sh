@@ -45,7 +45,7 @@ while read line
   done < aux.out
 features=$(cat res.out)
 features=$(echo ${features%?})
-echo "SharedLibraries = $features" >> $2
+echo "Features = $features" >> $2
 rm aux.out
 rm res.out
 
